@@ -3,6 +3,7 @@ import csv
 
 def student_manager():
     filename = "Data_Management_System/student.csv"
+    report = "Data_Management_System/reports/reports.txt"
 
     def initialize(filename):
         try:
@@ -14,7 +15,7 @@ def student_manager():
         except FileNotFoundError:
                 print("File is not created")
 
-    def add_student(filename):
+    def add_student():
         try:
             Name = input("Enter the name you want to add in the list: ")
             Age = int(input(f"Enter the age of {Name}: "))
@@ -31,7 +32,7 @@ def student_manager():
         except Exception as e:
              print(f"Unable to add record :{e}")
 
-    def view_students(filename):
+    def view_students():
         try:
             with open(filename, "r") as file:
                 reader = csv.DictReader(file)
@@ -40,7 +41,7 @@ def student_manager():
         except Exception as e:
             print(f"File not found: {e}")
 
-    def search_student(filename):
+    def search_student():
         try:
             name_search = input("Enter the name of the student you want to find: ")
             with open(filename, "r") as file:
@@ -52,7 +53,7 @@ def student_manager():
         except Exception as e:
             print(f"The name you entered is invalid: {e}")
 
-    def delete_student(filename):
+    def delete_student():
         try:
             name_delete = input("Enter the Name to be deleted: ")
             update_list = []
@@ -78,7 +79,7 @@ def student_manager():
         except Exception as e:
             print(f"Student not found : {e}")
 
-    def update_student(filename):
+    def update_student():
         try:
             name_update = input("Enter the Name of the student you want to update: ")
             value = input(f"Enter the field you want to update for {name_update}: ")
@@ -112,12 +113,11 @@ def student_manager():
         except Exception as e:
             print(f"The Data is not updated: {e}")
 
-    def statistics(filename):
+    def statistics():
             max_score= max_test1= max_test2= max_test3 = 0
             min_score= min_test1= min_test2= min_test3 = None
             max_name = max_test1_name = max_test2_name = max_test3_name = ""
             min_name = min_test1_name = min_test2_name = min_test3_name = ""
-            avg_score = 0
             try:
                 with open(filename, "r") as file:
                     reader = csv.DictReader(file)
@@ -153,20 +153,166 @@ def student_manager():
                         if min_test3 is None or test3 < min_test3:
                             min_test3 = test3
                             min_test3_name = row['Name']
-                print(f"The maximum score based on average is {max_score} and the name is {max_name}")
-                print(f"The highest mark in test 1 is {max_test1} and the name is {max_test1_name}")
-                print(f"The highest mark in test 2 is {max_test2} and the name is {max_test2_name}")
-                print(f"The highest mark in test 3 is {max_test3} and the name is {max_test3_name}")
 
-                print(f"The minimum score based on average is {min_score} and the name is {min_name}")
-                print(f"The lowest mark in test 1 is {min_test1} and the name is {min_test1_name}")
-                print(f"The lowest mark in test 2 is {min_test2} and the name is {min_test2_name}")
-                print(f"The lowest mark in test 3 is {min_test3} and the name is {min_test3_name}")
+                return {
+                    "max_score": max_score,
+                    "max_name": max_name,
+                    "max_test1": max_test1,
+                    "max_test1_name": max_test1_name,
+                    "max_test2": max_test2,
+                    "max_test2_name": max_test2_name,
+                    "max_test3": max_test3,
+                    "max_test3_name": max_test3_name,
+                    "min_score": min_score,
+                    "min_name": min_name,
+                    "min_test1": min_test1,
+                    "min_test1_name": min_test1_name,
+                    "min_test2": min_test2,
+                    "min_test2_name": min_test2_name,
+                    "min_test3": min_test3,
+                    "min_test3_name": min_test3_name
+                     }
 
 
             except Exception as e:
                 print(f"The Data is not updated: {e}")
 
+    def display_statistics():
+
+        stats = statistics()
+    
+        if stats is None:
+            print("No data available!")
+            return
+    
+    
+        print(f"The maximum score based on average is {stats['max_score']} and the name is {stats['max_name']}")
+        print(f"The highest mark in test 1 is {stats['max_test1']} and the name is {stats['max_test1_name']}")
+        print(f"The highest mark in test 2 is {stats['max_test2']} and the name is {stats['max_test2_name']}")
+        print(f"The highest mark in test 3 is {stats['max_test3']} and the name is {stats['max_test3_name']}")
+
+        print(f"The minimum score based on average is {stats['min_score']} and the name is {stats['min_name']}")
+        print(f"The lowest mark in test 1 is {stats['min_test1']} and the name is {stats['min_test1_name']}")
+        print(f"The lowest mark in test 2 is {stats['min_test2']} and the name is {stats['min_test2_name']}")
+        print(f"The lowest mark in test 3 is {stats['min_test3']} and the name is {stats['min_test3_name']}")
+
+
+
+    def top_student():
+        try:
+            max_score = 0
+            max_sum = 0
+            topper = ''
+            with open(filename, "r") as file:
+                
+                reader = csv.DictReader(file)
+                for row in reader:
+                    avg = float(row['Average'])
+                    sum = (int(row['Test 1'])) + (int(row['Test 2'])) + (int(row['Test 3']))
+                    if avg > max_score and sum > max_sum:
+                        max_score = avg
+                        max_sum = sum
+                        topper = row['Name']
+                    
+                
+                print(f"The topper in the class is {topper}, the total mark is {max_sum} and average is {max_score}")
+        
+        except Exception as e:
+            print(f"Sum error: {e}")
+
+    def export_report(filename, report):
+        try:
+            from datetime import datetime
+            now = datetime.now()
+            timestamp = now.strftime("%A, %B %d, %Y at %I:%M %p")
+            stats = statistics()
+            count = 0
+            class_avg = 0
+            max_score = 0
+            max_sum = 0
+            topper = ''
+            with open(filename, "r") as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    count+=1
+                    class_avg += float(row['Average'])
+                    avg = float(row['Average'])
+                    sum = (int(row['Test 1'])) + (int(row['Test 2'])) + (int(row['Test 3']))
+                    if avg > max_score and sum > max_sum:
+                        max_score = avg
+                        max_sum = sum
+                        topper = row['Name']
+                
+
+                class_average = f"{class_avg/count:.2f}"
+              
+
+            reports = f"""================================================================================\n                    STUDENT MANAGEMENT SYSTEM - CLASS REPORT\n================================================================================\n
+Generated on: {timestamp}
+Report Generated by: Student Management System\n
+--------------------------------------------------------------------------------\n                          CLASS OVERVIEW\n--------------------------------------------------------------------------------\n
+Total Students: {count}
+Average Class Score: {class_average}
+Highest Score: {stats['max_score']:.2f} ({stats['max_name']})
+Lowest Score: {stats['min_score']:.2f} ({stats['min_name']})
+
+--------------------------------------------------------------------------------
+                           TOP PERFORMERS BY TEST
+--------------------------------------------------------------------------------
+Test 1 - Highest: {stats['max_test1']} ({stats['max_test1_name']})
+Test 2 - Highest: {stats['max_test2']} ({stats['max_test2_name']})
+Test 3 - Highest: {stats['max_test3']} ({stats['max_test3_name']})
+
+--------------------------------------------------------------------------------
+                        STUDENTS NEEDING IMPROVEMENT
+--------------------------------------------------------------------------------
+Test 1 - Lowest: {stats['min_test1']} ({stats['min_test1_name']})
+Test 2 - Lowest: {stats['min_test2']} ({stats['min_test2_name']})
+Test 3 - Lowest: {stats['min_test3']} ({stats['min_test3_name']}) """
+
+            with open(report, "w") as file:
+                file.write(reports)
+
+        except Exception as e:
+            print(f"File not found: {e}")
+
+    while True:
+        print("Student Management System")
+        print("1. Add a Student")
+        print("2. View All Student Info")
+        print("3. Search a Student")
+        print("4. Delete Student Information")
+        print("5. Update Student Info")
+        print("6. View Statistics")
+        print("7. View Topper")
+        print("8. Export report")
+        print("9. Quit")
+
+        choice = input("Enter a number between 1-9 to perform operation: ")
+
+        if choice == "1":
+            add_student()
+        elif choice == "2":
+            view_students()
+        elif choice == "3":
+            search_student()
+        elif choice == "4":
+            delete_student()
+        elif choice == "5":
+            update_student()
+        elif choice == "6":
+            display_statistics()
+        elif choice == "7":
+            top_student()
+        elif choice == "8":
+            export_report(filename, report)
+        elif choice == "9":
+            print("Quitting...")
+            break
+        else:
+            print("Invalid value")
+
+        
 
     #initialize(filename)
     #add_student(filename)
@@ -174,6 +320,9 @@ def student_manager():
     #search_student(filename)
     #delete_student(filename)
     #update_student(filename)
-    statistics(filename)
+    #statistics(filename)
+    #top_student(filename)
+    #export_report(filename, report)
+    #display_statistics()
 
 student_manager()
