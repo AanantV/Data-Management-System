@@ -314,15 +314,5 @@ Test 3 - Lowest: {stats['min_test3']} ({stats['min_test3_name']}) """
 
         
 
-    #initialize(filename)
-    #add_student(filename)
-    #view_students(filename)
-    #search_student(filename)
-    #delete_student(filename)
-    #update_student(filename)
-    #statistics(filename)
-    #top_student(filename)
-    #export_report(filename, report)
-    #display_statistics()
 
 student_manager()
