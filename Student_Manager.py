@@ -2,7 +2,7 @@ import os
 import csv
 
 def student_manager():
-    filename = "Data Management System/student.csv"
+    filename = "Data_Management_System/student.csv"
 
     def initialize(filename):
         try:
@@ -39,6 +39,45 @@ def student_manager():
                     print(f"Name: {row['Name']}, Age: {row['Age']}, Test1: {row['Test 1']}, Test2: {row['Test 2']}, Test3: {row['Test 3']}, Average: {row['Average']} ")
         except Exception as e:
             print(f"File not found: {e}")
+
+    def search_student(filename):
+        try:
+            name_search = input("Enter the name of the student you want to find: ")
+            with open(filename, "r") as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    if row["Name"] == name_search:
+                        print(f"Name: {row['Name']}, Age: {row['Age']}, Test1: {row['Test 1']}, Test2: {row['Test 2']}, Test3: {row['Test 3']}, Average: {row['Average']}")
+                        return row
+        except Exception as e:
+            print(f"The name you entered is invalid: {e}")
+
+    def delete_student(filename):
+        try:
+            name_delete = input("Enter the Name to be deleted: ")
+            update_list = []
+            found = False
+            with open(filename, "r") as file:
+                reader = csv.DictReader(file)
+                fieldname = reader.fieldnames
+                for row in reader:
+                    if name_delete == row['Name']:
+                        found = True
+                    else:
+                        update_list.append(row)
+                if found:
+                    with open(filename, "w", newline = '') as file:
+                        writer = csv.DictWriter(file, fieldname)
+                        writer.writeheader()
+                        writer.writerows(update_list)
+                        print(f"The {name_delete} is deleted")
+                else:
+                    print("Data not found")
+
+
+        except Exception as e:
+            print(f"Student not found : {e}")
+
             
          
                    
@@ -46,7 +85,9 @@ def student_manager():
 
     #initialize(filename)
     #add_student(filename)
-    view_students(filename)
+    #view_students(filename)
+    #search_student(filename)
+    delete_student(filename)
 
 
 student_manager()
