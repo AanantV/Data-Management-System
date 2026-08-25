@@ -2,8 +2,8 @@ import os
 import csv
 
 def student_manager():
-    filename = "Data-Management-System/student.csv"
-    report = "Data-Management-System/reports/reports.txt"
+    filename = "student.csv"
+    report = "reports/reports.txt"
 
     def initialize(filename):
         try:
